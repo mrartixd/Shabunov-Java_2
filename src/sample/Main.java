@@ -22,9 +22,13 @@ import java.io.IOException;
 
 public class Main extends Application {
 
-    @Override
+@Override
     public void start(Stage primaryStage){
-        FormBook.MenuBar();
+        MainScreen(primaryStage);
+    }
+
+    public static void MainScreen(Stage primaryStage){
+        FormBook.MenuBar(primaryStage);
         final TableView mytable = new TableView();
 
         TableColumn numberCol = new TableColumn("#");
@@ -52,7 +56,7 @@ public class Main extends Application {
         mytable.getColumns().addAll(numberCol,bookidCol,authorCol,titleCol,genreCol, priceCol, publishCol, descCol);
 
         VBox vbx = new VBox();
-        vbx.setAlignment(Pos.CENTER);
+        vbx.setAlignment(Pos.TOP_CENTER);
         vbx.setSpacing(10);
 
         HBox hbx = new HBox();
@@ -69,13 +73,8 @@ public class Main extends Application {
                 FormBook.FormAdd(primaryStage);
             }
         });
-
-
-
-
         vbx.getChildren().addAll(FormBook.menuBar,mytable,hbx);
         hbx.getChildren().addAll(btnnb);
-
         Scene scene = new Scene(vbx, 1300,500);
         primaryStage.setTitle("Main");
         primaryStage.setScene(scene);
@@ -83,9 +82,7 @@ public class Main extends Application {
     }
 
 
-
     public static void main(String[] args) throws ParserConfigurationException, SAXException, IOException {
-
         XMLpars.printBook();
         launch(args);
     }
