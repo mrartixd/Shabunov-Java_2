@@ -1,14 +1,20 @@
 package sample;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.util.List;
 
 public class FormBook {
     public static MenuBar menuBar;
@@ -101,6 +107,41 @@ public class FormBook {
         hbx.setAlignment(Pos.CENTER);
         hbx.setSpacing(10);
 
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(25,25,25,25));
+
+
+        final TextField author = new TextField();
+        author.setText("Author: ");
+
+        final TextField title = new TextField();
+        title.setText("Title: ");
+
+        ChoiceBox<String> genrelist = new ChoiceBox();
+        ObservableList<String> items = FXCollections.observableArrayList("Computer","Romance", "Fantasy");
+        genrelist.setItems(items);
+        genrelist.setPrefSize(200,10);
+
+
+        final TextField price = new TextField();
+        price.setText("Price: ");
+
+
+        final TextField pubdate = new TextField();
+        pubdate.setText("Publish date: ");
+
+        final TextArea desc = new TextArea();
+        desc.setText("Description: ");
+
+        grid.add(author,0,0);
+        grid.add(title,0,1);
+        grid.add(genrelist,0,2);
+        grid.add(price,0,3);
+        grid.add(pubdate,0,4);
+
         Button cancel = new Button();
         cancel.setText("Cancel");
         cancel.setOnAction(new EventHandler<ActionEvent>() {
@@ -120,8 +161,8 @@ public class FormBook {
         });
 
 
-        vbx.getChildren().addAll(menuBar,lbl,hbx);
-        hbx.getChildren().addAll(cancel);
+        vbx.getChildren().addAll(menuBar,lbl,grid,hbx);
+        hbx.getChildren().addAll(cancel,send);
 
         stage.setTitle("Add form");
         stage.setX(100);
