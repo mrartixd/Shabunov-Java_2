@@ -7,11 +7,13 @@ package sample;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.xml.sax.SAXException;
@@ -55,13 +57,21 @@ public class Main extends Application {
         mytable.setItems(XMLpars.data);
         mytable.getColumns().addAll(numberCol,bookidCol,authorCol,titleCol,genreCol, priceCol, publishCol, descCol);
 
-        VBox vbx = new VBox();
-        vbx.setAlignment(Pos.TOP_CENTER);
-        vbx.setSpacing(10);
 
-        HBox hbx = new HBox();
-        hbx.setAlignment(Pos.CENTER);
-        hbx.setSpacing(10);
+        VBox top = new VBox();
+        top.setAlignment(Pos.TOP_CENTER);
+
+
+
+        VBox center = new VBox();
+        center.setAlignment(Pos.CENTER);
+        center.setSpacing(30);
+
+
+
+        HBox buttom = new HBox();
+        buttom.setAlignment(Pos.BOTTOM_CENTER);
+
 
 
 
@@ -73,9 +83,25 @@ public class Main extends Application {
                 FormBook.FormAdd(primaryStage);
             }
         });
-        vbx.getChildren().addAll(FormBook.menuBar,mytable,hbx);
-        hbx.getChildren().addAll(btnnb);
-        Scene scene = new Scene(vbx, 1300,500);
+
+        Button refresh = new Button();
+        refresh.setText("Refresh");
+        refresh.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                mytable.refresh();
+            }
+        });
+
+        mytable.prefHeightProperty().bind(primaryStage.heightProperty());
+
+        top.getChildren().addAll(FormBook.menuBar,center);
+        center.getChildren().addAll(mytable,buttom);
+        buttom.getChildren().addAll(btnnb, refresh);
+        buttom.setMargin(btnnb, new Insets(20.0));
+        buttom.setMargin(refresh, new Insets(20.0));
+        Scene scene = new Scene(top, 1300,500);
+
         primaryStage.setTitle("Main");
         primaryStage.setScene(scene);
         primaryStage.show();

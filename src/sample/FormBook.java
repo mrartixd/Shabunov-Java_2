@@ -101,17 +101,27 @@ public class FormBook {
         hbx.setAlignment(Pos.CENTER);
         hbx.setSpacing(10);
 
-        Button back = new Button();
-        back.setText("Back");
-        back.setOnAction(new EventHandler<ActionEvent>() {
+        Button cancel = new Button();
+        cancel.setText("Cancel");
+        cancel.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                Main.MainScreen(stage);
             }
         });
 
+        Button send = new Button();
+        send.setText("Send");
+        send.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                //send to xml file
+            }
+        });
+
+
         vbx.getChildren().addAll(menuBar,lbl,hbx);
-        hbx.getChildren().addAll(back);
+        hbx.getChildren().addAll(cancel);
 
         stage.setTitle("Add form");
         stage.setX(100);
