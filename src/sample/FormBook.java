@@ -8,13 +8,35 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
-import java.util.List;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.crypto.dsig.TransformException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class FormBook {
     public static MenuBar menuBar;
@@ -115,32 +137,38 @@ public class FormBook {
 
 
         final TextField author = new TextField();
-        author.setText("Author: ");
+        Label authortext = new Label("Author:");
 
         final TextField title = new TextField();
-        title.setText("Title: ");
+        Label titletext = new Label("Title:");
 
         ChoiceBox<String> genrelist = new ChoiceBox();
         ObservableList<String> items = FXCollections.observableArrayList("Computer","Romance", "Fantasy");
         genrelist.setItems(items);
-        genrelist.setPrefSize(200,10);
+        genrelist.setPrefSize(220,10);
 
 
         final TextField price = new TextField();
-        price.setText("Price: ");
+        Label pricetext = new Label("Price:");
 
+        DatePicker pubdate = new DatePicker();
+        Label pubdatetext = new Label("Date publish:");
+        pubdatetext.setMinWidth(Region.USE_PREF_SIZE);//fixed size
 
-        final TextField pubdate = new TextField();
-        pubdate.setText("Publish date: ");
 
         final TextArea desc = new TextArea();
-        desc.setText("Description: ");
-
-        grid.add(author,0,0);
-        grid.add(title,0,1);
-        grid.add(genrelist,0,2);
-        grid.add(price,0,3);
-        grid.add(pubdate,0,4);
+        Label desctext = new Label("Description");
+        grid.add(author,1,0);
+        grid.add(authortext,0,0);
+        grid.add(title,1,1);
+        grid.add(titletext,0,1);
+        grid.add(genrelist,1,2);
+        grid.add(price,1,3);
+        grid.add(pricetext,0,3);
+        grid.add(pubdate,1,4);
+        grid.add(pubdatetext,0,4);
+        grid.add(desc,1,5);
+        grid.add(desctext,0,5);
 
         Button cancel = new Button();
         cancel.setText("Cancel");
@@ -157,6 +185,20 @@ public class FormBook {
             @Override
             public void handle(ActionEvent event) {
                 //send to xml file
+                try {
+                    String FILENAME = "books.xml";
+                    File xmlParse = new File(System.getProperty("user.dir")+File.separator + FILENAME);
+                    String formatdate = pubdate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                    ObservableList<Book> data = FXCollections.observableArrayList();
+                    data.add(new Book("bk113", author.getText(), title.getText(),genrelist.getValue(), price.getText(),formatdate,desc.getText()));
+                    TransformerFactory tf = TransformerFactory.newInstance();
+                    Transformer trans = tf.newTransformer();
+                    OutputStream out = new FileOutputStream(xmlParse);
+                    trans.transform(new DOMSource((Node) data),new StreamResult(out));
+
+                } catch (TransformerException | FileNotFoundException ex){
+                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
 
@@ -168,7 +210,7 @@ public class FormBook {
         stage.setX(100);
         stage.setY(100);
 
-        Scene scene = new Scene(vbx, 600,700);
+        Scene scene = new Scene(vbx, 900,650);
         stage.setScene(scene);
         stage.show();
     }

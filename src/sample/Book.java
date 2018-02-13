@@ -1,41 +1,41 @@
 package sample;
 
 
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+
 public class Book {
-    private final SimpleStringProperty bookid;
+
+    @XmlAttribute
+    private final SimpleStringProperty id;
+    @XmlElement
     private final SimpleStringProperty author;
+    @XmlElement
     private final SimpleStringProperty title;
+    @XmlElement
     private final SimpleStringProperty genre;
+    @XmlElement
     private final SimpleStringProperty price;
-    private final SimpleStringProperty pubdate;
-    private final SimpleStringProperty descripe;
-    private final SimpleIntegerProperty counta;
+    @XmlElement
+    private final SimpleStringProperty publish_date;
+    @XmlElement
+    private final SimpleStringProperty description;
 
 
-    Book(int count, String idb, String authorb, String titleb, String genreb, String priceb, String date, String desc){
-        this.counta = new SimpleIntegerProperty(count);
-        this.bookid = new SimpleStringProperty(idb);
+    Book(String idb, String authorb, String titleb, String genreb, String priceb, String date, String desc){
+        this.id = new SimpleStringProperty(idb);
         this.author = new SimpleStringProperty(authorb);
         this.title = new SimpleStringProperty(titleb);
         this.genre = new SimpleStringProperty(genreb);
         this.price = new SimpleStringProperty(priceb);
-        this.pubdate = new SimpleStringProperty(date);
-        this.descripe = new SimpleStringProperty(desc);
-    }
-
-    public int getCount() {
-        return counta.get();
-    }
-
-    public void setCount(int count) {
-        this.counta.set(count);
+        this.publish_date = new SimpleStringProperty(date);
+        this.description = new SimpleStringProperty(desc);
     }
 
     public String getBookId() {
-        return bookid.get();
+        return id.get();
     }
 
     public String getAuthor(){
@@ -55,15 +55,15 @@ public class Book {
     }
 
     public String getDate(){
-        return pubdate.get();
+        return publish_date.get();
     }
 
     public String getDesc(){
-        return descripe.get();
+        return description.get();
     }
 
     public void setBookId(String ids){
-        bookid.set(ids);
+        id.set(ids);
     }
 
     public void setAuthor(String authors){
@@ -83,10 +83,10 @@ public class Book {
     }
 
     public void setDate(String dates){
-        pubdate.set(dates);
+        publish_date.set(dates);
     }
 
     public void setDescr(String descrs){
-        descripe.set(descrs);
+        description.set(descrs);
     }
 }

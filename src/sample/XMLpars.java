@@ -35,7 +35,6 @@ public class XMLpars {
             if (Node.ELEMENT_NODE == node.getNodeType()) {
                 Element element = (Element) node;
                 data.add(new Book(
-                        i+1,
                         element.getAttribute("id"),
                         element.getElementsByTagName("author").item(0).getTextContent(),
                         element.getElementsByTagName("title").item(0).getTextContent(),

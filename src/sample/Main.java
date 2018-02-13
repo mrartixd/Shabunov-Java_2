@@ -33,7 +33,6 @@ public class Main extends Application {
         FormBook.MenuBar(primaryStage);
         final TableView mytable = new TableView();
 
-        TableColumn numberCol = new TableColumn("#");
         TableColumn bookidCol = new TableColumn("Book ID");
         TableColumn authorCol = new TableColumn("Author");
         TableColumn titleCol = new TableColumn("Title");
@@ -43,8 +42,6 @@ public class Main extends Application {
         TableColumn descCol = new TableColumn("Description");
 
 
-
-        numberCol.setCellValueFactory(new PropertyValueFactory<Book,String>("count"));
         bookidCol.setCellValueFactory(new PropertyValueFactory<Book,String>("bookId"));
         authorCol.setCellValueFactory(new PropertyValueFactory<Book,String>("author"));
         titleCol.setCellValueFactory(new PropertyValueFactory<Book,String>("title"));
@@ -55,7 +52,7 @@ public class Main extends Application {
 
 
         mytable.setItems(XMLpars.data);
-        mytable.getColumns().addAll(numberCol,bookidCol,authorCol,titleCol,genreCol, priceCol, publishCol, descCol);
+        mytable.getColumns().addAll(bookidCol,authorCol,titleCol,genreCol, priceCol, publishCol, descCol);
 
 
         VBox top = new VBox();
