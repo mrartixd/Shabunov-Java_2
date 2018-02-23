@@ -10,9 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
+import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBContext;
@@ -23,15 +21,13 @@ import javax.xml.crypto.dsig.TransformException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Year;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -186,18 +182,81 @@ public class FormBook {
             public void handle(ActionEvent event) {
                 //send to xml file
                 try {
-                    String FILENAME = "books.xml";
-                    File xmlParse = new File(System.getProperty("user.dir")+File.separator + FILENAME);
+                    String FILENAME = "newbooks.xml";
+                    //File xmlParse = new File(System.getProperty("user.dir")+File.separator + FILENAME);
                     String formatdate = pubdate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                    ObservableList<Book> data = FXCollections.observableArrayList();
-                    data.add(new Book("bk113", author.getText(), title.getText(),genrelist.getValue(), price.getText(),formatdate,desc.getText()));
-                    TransformerFactory tf = TransformerFactory.newInstance();
-                    Transformer trans = tf.newTransformer();
-                    OutputStream out = new FileOutputStream(xmlParse);
-                    trans.transform(new DOMSource((Node) data),new StreamResult(out));
+                    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+                    DocumentBuilder db = dbf.newDocumentBuilder();
+                    Document doc= db.parse(FILENAME);
 
-                } catch (TransformerException | FileNotFoundException ex){
-                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                    //doc.getDocumentElement().normalize();
+//                    ObservableList<Book> data = FXCollections.observableArrayList();
+//                    data.add(new Book("bk113", author.getText(), title.getText(),genrelist.getValue(), price.getText(),formatdate,desc.getText()));
+
+                    Element root = null;
+
+                    NodeList nlist = doc.getChildNodes();
+                    for (int i = 0; i< nlist.getLength();i++){
+                        if(nlist.item(i) instanceof Element){
+                            root = (Element) nlist.item(i);
+                            break;
+                        }
+                    }
+
+                    root = doc.getDocumentElement();
+                    doc.appendChild(root);
+
+                    Element bookid = doc.createElement("book");
+                    bookid.setAttribute("id","bk113");
+                    root.appendChild(bookid);
+
+//                    Element idatr = doc.createElement("id");
+//                    idatr.setAttribute();
+//                    bookid.appendChild(idatr);
+
+                    Element authorbook = doc.createElement("author");
+                    authorbook.appendChild(doc.createTextNode(author.getText()));
+                    //authorbook.setTextContent(author.getText());
+                    bookid.appendChild(authorbook);
+                    Element titlebook = doc.createElement("title");
+                    titlebook.appendChild(doc.createTextNode(title.getText()));
+                    //titlebook.setTextContent(title.getText());
+                    bookid.appendChild(titlebook);
+                    Element genrebook = doc.createElement("genre");
+                    genrebook.appendChild(doc.createTextNode(genrelist.getValue()));
+                    //genrebook.setTextContent(genrelist.getValue());
+                    bookid.appendChild(genrebook);
+                    Element pricebook = doc.createElement("price");
+                    pricebook.appendChild(doc.createTextNode(price.getText()));
+                    //pricebook.setTextContent(price.getText());
+                    bookid.appendChild(pricebook);
+                    Element pubdatebook = doc.createElement("publish_date");
+                    pubdatebook.appendChild(doc.createTextNode(formatdate));
+                    //pubdatebook.setTextContent(formatdate);
+                    bookid.appendChild(pubdatebook);
+                    Element descbook = doc.createElement("description");
+                    descbook.appendChild(doc.createTextNode(desc.getText()));
+                    //descbook.setTextContent(desc.getText());
+                    bookid.appendChild(descbook);
+
+
+
+                    doc.getDocumentElement().normalize();
+                    TransformerFactory transformerFactory = TransformerFactory.newInstance();
+                    Transformer transformer = transformerFactory.newTransformer();
+//                    transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+//                    transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+                    DOMSource source = new DOMSource(doc);
+                    StreamResult result = new StreamResult(new File(FILENAME));
+
+                    // Output to console for testing
+                    // StreamResult result = new StreamResult(System.out);
+
+                    transformer.transform(source, result);
+
+
+                } catch (ParserConfigurationException | TransformerException|  IOException | SAXException ex){
+                    ex.printStackTrace();
                 }
             }
         });

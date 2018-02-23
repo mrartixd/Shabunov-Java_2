@@ -19,7 +19,11 @@ import javafx.stage.Stage;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class Main extends Application {
@@ -74,7 +78,7 @@ public class Main extends Application {
 
         Button btnnb = new Button();
         btnnb.setText("Add book");
-        btnnb.setOnAction(new EventHandler<ActionEvent>() {
+        btnnb.setOnAction(new EventHandler<ActionEvent>()  {
             @Override
             public void handle(ActionEvent event) {
                 FormBook.FormAdd(primaryStage);
@@ -86,7 +90,9 @@ public class Main extends Application {
         refresh.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                mytable.refresh();
+
+                    mytable.refresh();
+
             }
         });
 

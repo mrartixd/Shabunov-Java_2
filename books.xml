@@ -1,5 +1,4 @@
-<?xml version="1.0"?>
-<catalog>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><catalog>
    <book id="bk101">
       <author>Gambardella, Matthew</author>
       <title>XML Developer's Guide</title>
@@ -118,4 +117,3 @@
       environment.</description>
    </book>
 </catalog>
-
