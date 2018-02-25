@@ -4,11 +4,16 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -42,7 +47,11 @@ public class FormBook {
         });
         MenuItem menuDiag = new MenuItem("Diagram");
         menuDiag.setOnAction((ActionEvent t) -> {
-            FormDiag();
+            try {
+                FormDiag();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         });
 
 
@@ -59,20 +68,11 @@ public class FormBook {
         menuBar.getMenus().addAll(menuFile, menuAbout);
     }
 
-    public static void FormDiag() {
+    public static void FormDiag() throws IOException {
         Stage stage = new Stage();
-        StackPane stackPane = new StackPane();
-
-        Label lbl = new Label("Diagram");
-
-        stackPane.getChildren().addAll(lbl);
-
-        stage.setTitle("Add form");
-        stage.setX(100);
-        stage.setY(100);
-
-        Scene scene = new Scene(stackPane, 300, 300);
-        stage.setScene(scene);
+        Parent root = FXMLLoader.load(FormBook.class.getResource("Diagram.fxml"));
+        stage.setTitle("Diagram");
+        stage.setScene(new Scene(root));
         stage.show();
     }
 
@@ -107,7 +107,6 @@ public class FormBook {
 
     public static void FormAdd(Stage stage) {
         MenuBar(stage);
-        StackPane stackPane = new StackPane();
 
         Label lbl = new Label("Add new book");
 
@@ -150,8 +149,6 @@ public class FormBook {
         Label desctext = new Label("Description");
 
 
-
-
         grid.add(author, 1, 0);
         grid.add(authortext, 0, 0);
         grid.add(title, 1, 1);
@@ -163,14 +160,21 @@ public class FormBook {
         grid.add(pubdatetext, 0, 4);
         grid.add(desc, 1, 5);
         grid.add(desctext, 0, 5);
-        grid.add(add,1,6);
+        grid.add(add, 1, 6);
 
         Button cancel = new Button();
         cancel.setText("Cancel");
         cancel.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Main.MainScreen(stage);
+                try {
+                    XMLpars.data.clear();
+                    XMLpars.printBook();
+                    Main.MainScreen(stage);
+                } catch (ParserConfigurationException | IOException | SAXException ex) {
+                    ex.printStackTrace();
+                }
+
             }
         });
 

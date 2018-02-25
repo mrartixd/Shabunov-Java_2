@@ -10,30 +10,29 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 public class Main extends Application {
 
-@Override
-    public void start(Stage primaryStage){
+    @Override
+    public void start(Stage primaryStage) {
+
         MainScreen(primaryStage);
+
     }
 
-    public static void MainScreen(Stage primaryStage){
+    public static void MainScreen(Stage primaryStage) {
         FormBook.MenuBar(primaryStage);
         final TableView mytable = new TableView();
 
@@ -46,22 +45,20 @@ public class Main extends Application {
         TableColumn descCol = new TableColumn("Description");
 
 
-        bookidCol.setCellValueFactory(new PropertyValueFactory<Book,String>("bookId"));
-        authorCol.setCellValueFactory(new PropertyValueFactory<Book,String>("author"));
-        titleCol.setCellValueFactory(new PropertyValueFactory<Book,String>("title"));
-        genreCol.setCellValueFactory(new PropertyValueFactory<Book,String>("genre"));
-        priceCol.setCellValueFactory(new PropertyValueFactory<Book,String>("price"));
-        publishCol.setCellValueFactory(new PropertyValueFactory<Book,String>("date"));
-        descCol.setCellValueFactory(new PropertyValueFactory<Book,String>("desc"));
+        bookidCol.setCellValueFactory(new PropertyValueFactory<Book, String>("bookId"));
+        authorCol.setCellValueFactory(new PropertyValueFactory<Book, String>("author"));
+        titleCol.setCellValueFactory(new PropertyValueFactory<Book, String>("title"));
+        genreCol.setCellValueFactory(new PropertyValueFactory<Book, String>("genre"));
+        priceCol.setCellValueFactory(new PropertyValueFactory<Book, String>("price"));
+        publishCol.setCellValueFactory(new PropertyValueFactory<Book, String>("date"));
+        descCol.setCellValueFactory(new PropertyValueFactory<Book, String>("desc"));
 
 
         mytable.setItems(XMLpars.data);
-        mytable.getColumns().addAll(bookidCol,authorCol,titleCol,genreCol, priceCol, publishCol, descCol);
-
+        mytable.getColumns().addAll(bookidCol, authorCol, titleCol, genreCol, priceCol, publishCol, descCol);
 
         VBox top = new VBox();
         top.setAlignment(Pos.TOP_CENTER);
-
 
 
         VBox center = new VBox();
@@ -69,16 +66,13 @@ public class Main extends Application {
         center.setSpacing(30);
 
 
-
         HBox buttom = new HBox();
         buttom.setAlignment(Pos.BOTTOM_CENTER);
 
 
-
-
         Button btnnb = new Button();
         btnnb.setText("Add book");
-        btnnb.setOnAction(new EventHandler<ActionEvent>()  {
+        btnnb.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 FormBook.FormAdd(primaryStage);
@@ -90,24 +84,28 @@ public class Main extends Application {
         refresh.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-
-                    mytable.refresh();
-
+                try {
+                    XMLpars.data.clear();
+                    XMLpars.printBook();
+                } catch (ParserConfigurationException | IOException | SAXException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
 
         mytable.prefHeightProperty().bind(primaryStage.heightProperty());
 
-        top.getChildren().addAll(FormBook.menuBar,center);
-        center.getChildren().addAll(mytable,buttom);
+        top.getChildren().addAll(FormBook.menuBar, center);
+        center.getChildren().addAll(mytable, buttom);
         buttom.getChildren().addAll(btnnb, refresh);
         buttom.setMargin(btnnb, new Insets(20.0));
         buttom.setMargin(refresh, new Insets(20.0));
-        Scene scene = new Scene(top, 1300,500);
-
+        Scene scene = new Scene(top, 1300, 500);
+        scene.getStylesheets().add("main.css");
         primaryStage.setTitle("Main");
         primaryStage.setScene(scene);
         primaryStage.show();
+
     }
 
 
