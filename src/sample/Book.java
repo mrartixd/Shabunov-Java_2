@@ -3,24 +3,15 @@ package sample;
 
 import javafx.beans.property.SimpleStringProperty;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
 
 public class Book {
 
-    @XmlAttribute
     private final SimpleStringProperty id;
-    @XmlElement
     private final SimpleStringProperty author;
-    @XmlElement
     private final SimpleStringProperty title;
-    @XmlElement
     private final SimpleStringProperty genre;
-    @XmlElement
     private final SimpleStringProperty price;
-    @XmlElement
     private final SimpleStringProperty publish_date;
-    @XmlElement
     private final SimpleStringProperty description;
 
 

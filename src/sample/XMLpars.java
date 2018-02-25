@@ -15,7 +15,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class XMLpars {
-    public static final String FILENAME = "books.xml";
+    public static final String FILENAME = "newbooks.xml";
     public static final File xmlParse = new File(System.getProperty("user.dir")+File.separator + FILENAME);
     public static DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     public static DocumentBuilder db;
