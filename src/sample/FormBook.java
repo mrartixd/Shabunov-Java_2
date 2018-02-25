@@ -163,7 +163,7 @@ public class FormBook {
         grid.add(pubdatetext, 0, 4);
         grid.add(desc, 1, 5);
         grid.add(desctext, 0, 5);
-        grid.add(add,0,6);
+        grid.add(add,1,6);
 
         Button cancel = new Button();
         cancel.setText("Cancel");
