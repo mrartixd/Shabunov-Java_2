@@ -17,6 +17,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -28,6 +30,9 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
 import java.io.File;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
@@ -35,6 +40,8 @@ import java.time.format.DateTimeFormatter;
 public class FormBook {
     public static MenuBar menuBar;
     public static Label add = new Label();
+    //public static Label newadd = new Label();
+    public static String newbk;
 
     public static void MenuBar(Stage stage) {
         menuBar = new MenuBar();
@@ -105,7 +112,7 @@ public class FormBook {
         stage.show();
     }
 
-    public static void FormAdd(Stage stage) {
+    public static void FormAdd(Stage stage) throws Exception {
         MenuBar(stage);
 
         Label lbl = new Label("Add new book");
@@ -161,6 +168,7 @@ public class FormBook {
         grid.add(desc, 1, 5);
         grid.add(desctext, 0, 5);
         grid.add(add, 1, 6);
+        //grid.add(newadd, 1, 7);
 
         Button cancel = new Button();
         cancel.setText("Cancel");
@@ -180,64 +188,80 @@ public class FormBook {
 
         Button send = new Button();
         send.setText("Send");
+
+        String FILENAME = "newbooks.xml";
+        File xmlParse = new File(System.getProperty("user.dir") + File.separator + FILENAME);
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        Document doc = db.parse(xmlParse);
+        doc.getDocumentElement().normalize();
+        NodeList nList = doc.getElementsByTagName("book");
+
+        for (int temp = 0; temp < nList.getLength(); temp++) {
+            Node nNode = nList.item(temp);
+            if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element) nNode;
+                //add.setText("Last: "+element.getAttribute("id"));
+                int num = Integer.parseInt(element.getAttribute("id").replaceAll("[bk]", ""));
+                num++;
+                newbk = "bk".concat(String.valueOf(num));
+                //newadd.setText("New: "+newbk);
+            }
+        }
+
         send.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                //send to xml file
                 try {
-                    String FILENAME = "newbooks.xml";
-                    File xmlParse = new File(System.getProperty("user.dir") + File.separator + FILENAME);
-                    String formatdate = pubdate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-                    DocumentBuilder db = dbf.newDocumentBuilder();
-                    Document doc = db.parse(xmlParse);
+                    if (author.getText().trim().isEmpty() || title.getText().trim().isEmpty() || genrelist.getItems().isEmpty() || price.getText().trim().isEmpty() || pubdate.getValue().toString().trim().isEmpty() || desc.getText().trim().isEmpty()) {
+                        add.setText("Error check values");
+                    } else {
 
-                    Element bookid = doc.createElement("book");
-                    bookid.setAttribute("id", "bk113");
-                    doc.getDocumentElement().appendChild(bookid);//получение root tag и добавление в него book
+                        String formatdate = pubdate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                        Element bookid = doc.createElement("book");
+                        bookid.setAttribute("id", newbk);
+                        doc.getDocumentElement().appendChild(bookid);//получение root tag и добавление в него book
 
-                    Element authorbook = doc.createElement("author");
-                    authorbook.appendChild(doc.createTextNode(author.getText()));
-                    bookid.appendChild(authorbook);
+                        Element authorbook = doc.createElement("author");
+                        authorbook.appendChild(doc.createTextNode(author.getText()));
+                        bookid.appendChild(authorbook);
 
-                    Element titlebook = doc.createElement("title");
-                    titlebook.appendChild(doc.createTextNode(title.getText()));
+                        Element titlebook = doc.createElement("title");
+                        titlebook.appendChild(doc.createTextNode(title.getText()));
 
-                    bookid.appendChild(titlebook);
-                    Element genrebook = doc.createElement("genre");
-                    genrebook.appendChild(doc.createTextNode(genrelist.getValue()));
+                        bookid.appendChild(titlebook);
+                        Element genrebook = doc.createElement("genre");
+                        genrebook.appendChild(doc.createTextNode(genrelist.getValue()));
 
-                    bookid.appendChild(genrebook);
-                    Element pricebook = doc.createElement("price");
-                    pricebook.appendChild(doc.createTextNode(price.getText()));
+                        bookid.appendChild(genrebook);
+                        Element pricebook = doc.createElement("price");
+                        pricebook.appendChild(doc.createTextNode(price.getText()));
 
-                    bookid.appendChild(pricebook);
-                    Element pubdatebook = doc.createElement("publish_date");
-                    pubdatebook.appendChild(doc.createTextNode(formatdate));
+                        bookid.appendChild(pricebook);
+                        Element pubdatebook = doc.createElement("publish_date");
+                        pubdatebook.appendChild(doc.createTextNode(formatdate));
 
-                    bookid.appendChild(pubdatebook);
-                    Element descbook = doc.createElement("description");
-                    descbook.appendChild(doc.createTextNode(desc.getText()));
-                    bookid.appendChild(descbook);
+                        bookid.appendChild(pubdatebook);
+                        Element descbook = doc.createElement("description");
+                        descbook.appendChild(doc.createTextNode(desc.getText()));
+                        bookid.appendChild(descbook);
 
 
-                    doc.getDocumentElement().normalize();
-                    TransformerFactory transformerFactory = TransformerFactory.newInstance();
-                    Transformer transformer = transformerFactory.newTransformer();
-                    transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-                    DOMSource source = new DOMSource(doc);
-                    StreamResult result = new StreamResult(xmlParse);
-                    transformer.transform(source, result);
-                    add.setText("New book add");
-
-
-                } catch (ParserConfigurationException | TransformerException | IOException | SAXException ex) {
+                        doc.getDocumentElement().normalize();
+                        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+                        Transformer transformer = transformerFactory.newTransformer();
+                        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+                        DOMSource source = new DOMSource(doc);
+                        StreamResult result = new StreamResult(xmlParse);
+                        transformer.transform(source, result);
+                        add.setText("Add new row!");
+                    }
+                } catch (Exception ex) {
                     ex.printStackTrace();
                 }
+
             }
         });
-
-
         vbx.getChildren().addAll(menuBar, lbl, grid, hbx);
         hbx.getChildren().addAll(cancel, send);
 

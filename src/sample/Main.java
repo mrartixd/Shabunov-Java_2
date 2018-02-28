@@ -75,7 +75,11 @@ public class Main extends Application {
         btnnb.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                FormBook.FormAdd(primaryStage);
+                try {
+                    FormBook.FormAdd(primaryStage);
+                }catch (Exception ex){
+                    ex.printStackTrace();
+                }
             }
         });
 
