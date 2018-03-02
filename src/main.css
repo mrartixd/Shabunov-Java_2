@@ -3,14 +3,10 @@
     -fx-background:linear-gradient(to bottom, #77d42a 5%, #5cb811 100%);
     -fx-background-color:#77d42a;
     -fx-border-radius:6px;
-    -fx-display:inline-block;
-    -fx-cursor:pointer;
     -fx-color:#306108;
     -fx-font-family:Arial;
     -fx-font-size:15px;
     -fx-font-weight:bold;
-    -fx-padding:6px 24px;
-    -fx-text-decoration:none;
 }
 .button:hover {
     -fx-background:linear-gradient(to bottom, #5cb811 5%, #77d42a 100%);

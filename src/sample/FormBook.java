@@ -45,7 +45,6 @@ public class FormBook {
     public static void MenuBar(Stage stage) {
         menuBar = new MenuBar();
         Menu menuFile = new Menu("File");
-        Menu menuAbout = new Menu("About");
 
         MenuItem menuExit = new MenuItem("Exit");
         menuExit.setOnAction((ActionEvent t) -> {
@@ -63,52 +62,16 @@ public class FormBook {
         });
 
 
-        MenuItem About = new MenuItem("About");
-        About.setOnAction((ActionEvent t) -> {
-            FormAbout();
-        });
-
-
-        menuAbout.getItems().add(About);
-
         menuFile.getItems().addAll(menuDiag, menuExit);
 
-        menuBar.getMenus().addAll(menuFile, menuAbout);
+        menuBar.getMenus().addAll(menuFile);
     }
 
 
-    public static void FormAbout() {
-        Stage stage = new Stage();
-
-
-        Label lbl = new Label("Shabunov Artur RDIR61");
-        Label text = new Label("Praktika Java_2\n" +
-                "Loo JAVAFX Application ja vorminda objektid CSS abil\n" +
-                "Genereeri programmis algandmed raamatude infoga (kategooria, raamat, ilmumuse aasta, hind), min  5tk.\n" +
-                "Programmis realiseeri:\n" +
-                "\n" +
-                "Uue raamatu lisamine\n" +
-                "Kuva kõik raamatud\n" +
-                "Diagramm, mis näitab mitu raamatut on igas kategoorias\n" +
-                "Diagramm, mis näitab mitu raamatut ilmusid igas aastas\n" +
-                "\n");
-
-        VBox vb = new VBox();
-
-        vb.getChildren().addAll(lbl, text);
-
-        stage.setTitle("About form");
-        stage.setX(100);
-        stage.setY(100);
-
-        Scene scene = new Scene(vb, 300, 300);
-        stage.setScene(scene);
-        stage.show();
-    }
 
     public static void FormAdd(Stage stage) throws Exception {
         MenuBar(stage);
-
+        add.setText("");
         Label lbl = new Label("Add new book");
 
         VBox vbx = new VBox();
@@ -257,6 +220,7 @@ public class FormBook {
         stage.setY(100);
 
         Scene scene = new Scene(vbx, 900, 650);
+        scene.getStylesheets().add("main.css");
         stage.setScene(scene);
         stage.show();
     }
