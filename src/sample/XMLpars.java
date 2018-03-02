@@ -22,11 +22,13 @@ public class XMLpars {
     public static Document doc;
     public static ObservableList<Book> data = FXCollections.observableArrayList();
 
-    public static void printBook() throws ParserConfigurationException, SAXException, IOException {
+    public static void ParseFile() throws Exception{
         db = dbf.newDocumentBuilder();
         doc = db.parse(xmlParse);
-        doc.getDocumentElement().normalize();
+    }
 
+    public static void printBook() throws Exception {
+        ParseFile();
         NodeList nodeList = doc.getElementsByTagName("book");
 
         for (int i = 0; i < nodeList.getLength(); i++) {

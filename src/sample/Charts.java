@@ -25,13 +25,9 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
 import java.io.File;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 
 public class Charts {
@@ -42,21 +38,30 @@ public class Charts {
         Tab tab1 = new Tab();
         tab1.setText("Category piechart");
 
-        String FILENAME = "newbooks.xml";
-        File xmlParse = new File(System.getProperty("user.dir") + File.separator + FILENAME);
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        DocumentBuilder db = dbf.newDocumentBuilder();
-        Document doc = db.parse(xmlParse);
-        NodeList links = doc.getElementsByTagName("genre");
-        ObservableSet<String> observableSet = FXCollections.observableSet();
-        for (int i=0;i<links.getLength();i++){
-            Node link = links.item(i);
-            observableSet.add(link.getTextContent());
+        XMLpars.ParseFile();
+        NodeList genre = XMLpars.doc.getElementsByTagName("genre");
+        NodeList year = XMLpars.doc.getElementsByTagName("publish_date");
+
+        ObservableSet<String> genobservableSet = FXCollections.observableSet();
+        ObservableSet<String> yearobservableSet = FXCollections.observableSet();
+        ArrayList<String> genres = new ArrayList<>();
+        ArrayList<String> years = new ArrayList<>();
+
+
+        for (int i = 0; i<year.getLength(); i++){
+            Node yer = year.item(i);
+            yearobservableSet.add(yer.getTextContent().substring(0,4));
+            years.add(yer.getTextContent().substring(0,4));
         }
 
+        for (int i=0;i<genre.getLength();i++){
+            Node gen = genre.item(i);
+            genobservableSet.add(gen.getTextContent());
+            genres.add(gen.getTextContent());
+        }
         ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
-        for (String observableSets: observableSet) {
-            pieChartData.add(new PieChart.Data(observableSets,3));
+        for (String observableSets: genobservableSet) {
+            pieChartData.add(new PieChart.Data(observableSets, Collections.frequency(genres,observableSets)));
         }
 
 
@@ -87,12 +92,17 @@ public class Charts {
 //--------------------------------------------
         tab1.setContent(chart);
         Tab tab2 = new Tab();
-        tab2.setText("Years barchart");
+        tab2.setText("Years category");
 //BarChart-------------------------------
         //---change to loop
-        final String test1 = "Book1";//category
-        final String test2 = "Book2";
-        final String test3 = "Book3";
+
+
+        String numbercat[] = new String[yearobservableSet.size()];
+        int c = 0;
+        for (String observableSets: yearobservableSet) {
+            numbercat[c] = observableSets;
+            c++;
+        }
 
         final CategoryAxis categoryAxis = new CategoryAxis();
         final NumberAxis numberAxis = new NumberAxis();
@@ -102,14 +112,18 @@ public class Charts {
         numberAxis.setLabel("Count");
 
         XYChart.Series series1 = new XYChart.Series();
-        series1.setName("");//year
-        series1.getData().add(new XYChart.Data(test1, 3));
-        series1.getData().add(new XYChart.Data(test2, 4));
-        series1.getData().add(new XYChart.Data(test3, 5));
+        series1.setName("1900-2020");//year
+        int j = 0;
+            for (String observableSets: yearobservableSet) {
+                series1.getData().add(new XYChart.Data(numbercat[j], Collections.frequency(years,observableSets)));
+                j++;
+            }
+
 
         bc.getData().addAll(series1);
 //------------------------------
         tab2.setContent(bc);
+        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         tabPane.getTabs().addAll(tab1, tab2);
         Scene scene = new Scene(tabPane, 600, 300);
         stage.setScene(scene);

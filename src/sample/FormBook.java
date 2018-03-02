@@ -173,7 +173,7 @@ public class FormBook {
                     XMLpars.data.clear();
                     XMLpars.printBook();
                     Main.MainScreen(stage);
-                } catch (ParserConfigurationException | IOException | SAXException ex) {
+                } catch (Exception ex) {
                     ex.printStackTrace();
                 }
 
@@ -183,12 +183,8 @@ public class FormBook {
         Button send = new Button();
         send.setText("Send");
 
-        String FILENAME = "newbooks.xml";
-        File xmlParse = new File(System.getProperty("user.dir") + File.separator + FILENAME);
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        DocumentBuilder db = dbf.newDocumentBuilder();
-        Document doc = db.parse(xmlParse);
-        NodeList nList = doc.getElementsByTagName("book");
+        XMLpars.ParseFile();
+        NodeList nList = XMLpars.doc.getElementsByTagName("book");
 
         for (int temp = 0; temp < nList.getLength(); temp++) {
             Node nNode = nList.item(temp);
@@ -211,39 +207,39 @@ public class FormBook {
                     } else {
 
                         String formatdate = pubdate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                        Element bookid = doc.createElement("book");
+                        Element bookid = XMLpars.doc.createElement("book");
                         bookid.setAttribute("id", newbk);
-                        doc.getDocumentElement().appendChild(bookid);//получение root tag и добавление в него book
+                        XMLpars.doc.getDocumentElement().appendChild(bookid);//получение root tag и добавление в него book
 
-                        Element authorbook = doc.createElement("author");
-                        authorbook.appendChild(doc.createTextNode(author.getText()));
+                        Element authorbook = XMLpars.doc.createElement("author");
+                        authorbook.appendChild(XMLpars.doc.createTextNode(author.getText()));
                         bookid.appendChild(authorbook);
 
-                        Element titlebook = doc.createElement("title");
-                        titlebook.appendChild(doc.createTextNode(title.getText()));
+                        Element titlebook = XMLpars.doc.createElement("title");
+                        titlebook.appendChild(XMLpars.doc.createTextNode(title.getText()));
 
                         bookid.appendChild(titlebook);
-                        Element genrebook = doc.createElement("genre");
-                        genrebook.appendChild(doc.createTextNode(genrelist.getValue()));
+                        Element genrebook = XMLpars.doc.createElement("genre");
+                        genrebook.appendChild(XMLpars.doc.createTextNode(genrelist.getValue()));
 
                         bookid.appendChild(genrebook);
-                        Element pricebook = doc.createElement("price");
-                        pricebook.appendChild(doc.createTextNode(price.getText()));
+                        Element pricebook = XMLpars.doc.createElement("price");
+                        pricebook.appendChild(XMLpars.doc.createTextNode(price.getText()));
 
                         bookid.appendChild(pricebook);
-                        Element pubdatebook = doc.createElement("publish_date");
-                        pubdatebook.appendChild(doc.createTextNode(formatdate));
+                        Element pubdatebook = XMLpars.doc.createElement("publish_date");
+                        pubdatebook.appendChild(XMLpars.doc.createTextNode(formatdate));
 
                         bookid.appendChild(pubdatebook);
-                        Element descbook = doc.createElement("description");
-                        descbook.appendChild(doc.createTextNode(desc.getText()));
+                        Element descbook = XMLpars.doc.createElement("description");
+                        descbook.appendChild(XMLpars.doc.createTextNode(desc.getText()));
                         bookid.appendChild(descbook);
 
                         TransformerFactory transformerFactory = TransformerFactory.newInstance();
                         Transformer transformer = transformerFactory.newTransformer();
                         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-                        DOMSource source = new DOMSource(doc);
-                        StreamResult result = new StreamResult(xmlParse);
+                        DOMSource source = new DOMSource(XMLpars.doc);
+                        StreamResult result = new StreamResult(XMLpars.xmlParse);
                         transformer.transform(source, result);
                         add.setText("Add new row!");
                     }
