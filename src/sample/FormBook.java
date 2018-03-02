@@ -1,13 +1,15 @@
+/**
+ * Artur Shabunov RDIR61
+ */
+
 package sample;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -20,19 +22,16 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+import sample.Charts;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
 import java.io.File;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
@@ -54,11 +53,13 @@ public class FormBook {
         });
         MenuItem menuDiag = new MenuItem("Diagram");
         menuDiag.setOnAction((ActionEvent t) -> {
+           //add charts
             try {
-                FormDiag();
-            } catch (IOException ex) {
-                ex.printStackTrace();
+                Charts.ShowTabs();
+            }catch (Exception e){
+                e.printStackTrace();
             }
+
         });
 
 
@@ -75,13 +76,6 @@ public class FormBook {
         menuBar.getMenus().addAll(menuFile, menuAbout);
     }
 
-    public static void FormDiag() throws IOException {
-        Stage stage = new Stage();
-        Parent root = FXMLLoader.load(FormBook.class.getResource("Diagram.fxml"));
-        stage.setTitle("Diagram");
-        stage.setScene(new Scene(root));
-        stage.show();
-    }
 
     public static void FormAbout() {
         Stage stage = new Stage();
@@ -194,7 +188,6 @@ public class FormBook {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
         Document doc = db.parse(xmlParse);
-        doc.getDocumentElement().normalize();
         NodeList nList = doc.getElementsByTagName("book");
 
         for (int temp = 0; temp < nList.getLength(); temp++) {
@@ -246,8 +239,6 @@ public class FormBook {
                         descbook.appendChild(doc.createTextNode(desc.getText()));
                         bookid.appendChild(descbook);
 
-
-                        doc.getDocumentElement().normalize();
                         TransformerFactory transformerFactory = TransformerFactory.newInstance();
                         Transformer transformer = transformerFactory.newTransformer();
                         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
